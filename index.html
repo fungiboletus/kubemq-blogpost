@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KubeMQ, the Kubernetes native message queue broker that refuses to start on Kubernetes</title>
+  <style type="text/css">
+    @media (prefers-color-scheme: dark) {
+      body {
+        color: #fff;
+        background: #222;
+      }
+
+      a:link {
+        color: #9cf
+      }
+
+      a:hover,
+      a:visited:hover {
+        color: #cef
+      }
+
+      a:visited {
+        color: #c9f
+      }
+    }
+
+    body {
+      margin: 1em auto;
+      max-width: 40em;
+      padding: 0 .62em;
+      font: 1.2em/1.62 sans-serif;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      margin-top: 3em;
+    }
+
+    @media print {
+      body {
+        max-width: none
+      }
+    }
+
+    img {
+      max-width: 100%;
+      max-width: 90vw;
+      max-width: min(90vw, 100%);
+    }
+
+    iframe {
+      max-width: 100%;
+    }
+
+    code {
+      font-family: monospace, monospace;
+    }
+
+    code strong {
+      color: #007020;
+    }
+
+    code span {
+      color: #4070a0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>KubeMQ, the Kubernetes native message queue broker that refuses to start on Kubernetes</h1>
+
+  <p>
+    A little while ago, a project partner was looking for a message queue broker. They probably searched for something
+    among the terms "message queue Kubernetes" on their favourite search engine and went with <a
+      href="https://kubemq.io/">KubeMQ</a>. This week, I deployed their work in our test environment and learned about
+    KubeMQ for the first time.
+  </p>
+
+  <img src="./dashboard.png" alt="KubeMQ dashboard" />
+
+  <p>
+    As someone who just decided to use RabbitMQ and not Kafka and read too much about message queue software, I was
+    surprised to discover a new message queue broker. <a href="https://kubemq.io">The frontpage</a> looks decent, with a
+    clean logo, fair documentation, a <a href="https://www.cncf.io">Cloud Native Computing Foundation</a> (CNCF) logo,
+    easy installation scripts, and many great promises. It's open-source with commercial support, which is a good thing.
+  </p>
+
+  <p>
+    <img src="./member-cncf.png" alt="CNCF membership image" width="323">
+  </p>
+
+  <p>
+    I quickly found the <a href="https://kubemq.io/compare-kubemq/">classic comparison page</a> that conveniently
+    compares KubeMQ with Kafka, RabbitMQ, AWS SQS, and Redis. But it immediately looks wrong. While writing this post, I
+    noticed the table is entirely mixed up. It had been mixed up differently earlier in the week and in another way <a
+      href="https://web.archive.org/web/20230605073747/https://kubemq.io/compare-kubemq/">in the latest snapshot from
+      the web archive</a>. But you can read that RabbitMQ doesn't scale or that Kafka is very popular <em>but</em> is
+    Java-based. Redis has its column in, but it's empty, and overall, the table contains many bold, unsourced claims
+    that sound a bit too good to be true.
+  </p>
+
+
+  <p>I'm a bit surprised to see that the Cloud Native Computing Foundation has a project with such a comparison table,
+    but I then understand that KubeMQ is not a CNFC project or incubating project, and the KubeMQ front page claims to
+    be a CNCF <em>member</em> and not a <em>project</em>. Moreover, I didn't see KubeMQ in the <a
+      href="https://www.cncf.io/about/members/">CNCF members list</a> while writing this post.</p>
+
+  <p>
+    I then do the classic GitHub repository smell test. The <a
+      href="https://github.com/kubemq-io/kubemq-community">kubemq-io/kubemq-community</a> repository has about 600 stars
+    and 25 relatively old issues. This kind of ratio is not great. It smells hyped but unused tech', or fake
+    stars. The star's history could be looking better, too. I wonder if KubeMQ bought fake GitHub stars at some point or
+    got very popular for a little while. I didn't see any popular post on HN or matching patterns with the Google Search
+    trends about KubeMQ. But it could have been on the front page of some non-English speaking media.
+  </p>
+
+  <img src="./star-history-20231129.png" alt="Star history of the kubemq-io/kubemq-community repository" />
+
+  <img src="./gtrends.png" alt="Google Trends for KubeMQ" />
+
+  <p>
+    The repository has relatively little activity with one main contributor; the last release has no git tag or GitHub
+    release, and the commit messages are often "wip" and "update". I'm not very good at this myself; my git histories
+    are a mess because I don't care about them, I'm often the only contributor, and I don't do releases well every time,
+    so I'm a bit hypocritical to judge on this.
+  </p>
+
+  <p>Anyway, I have to install this, and our test environment is supposed to handle all kinds of software as long as it
+    runs on Kubernetes. KubeMQ is a Kubernetes native message queue broker, so it should be fine.</p>
+  <code>
+  <strong>switch</strong> env {<br />
+    &nbsp;&nbsp;<strong>case</strong> <span>"kubernetes"</span>:<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;<strong>return nil</strong>, fmt.Errorf(<span>"running kubemq community version on kubernetes is not supported anymore, please use kubemq commercial version"</span>)
+  </code>
+  </p>
+
+  <p>Well no. The Apache-2.0 OpenSource version refuses to start if it detects a Kubernetes environment.</p>
+
+  <p>
+    Of course, <a href="https://github.com/kelvin-pl/kubemq-community">someone made a fork</a> and removed the telemetry
+    and the Kubernetes restriction. A few minutes later, KubeMQ was running well in our Kubernetes test environment.
+  </p>
+
+  <p>I'm not sure what to think about this. I understand that one needs to eat, and pushing for a commercial version by
+    removing features from the open-source version is nothing new. But I don't like this.
+  </p>
+
+  <p>About the qualities of KubeMQ, even if KubeMQ doesn't do as well as claimed, being better than RabbitMQ, Kafka, and
+    Redis in every way at the same time is bold, it may still be a valuable tool for some use cases. If all the
+    advertised features work most of the time, even slowly or with significant limitations, this is great and welcome
+    open-source software. The author definitely has some talents from my brief look.
+  </p>
+
+  <p>When it comes to the claims of doing much better than all the best message queue brokers out there, I will not
+    verify. I do not trust KubeMQ.</p>
+
+  <br />
+  <hr />
+  <p>Antoine - 2023-11-29 - <a href="https://github.com/fungiboletus/kubemq-blogpost">GitHub repository of this post</a>
+  </p>
+</body>
+
+</html>
