@@ -76,7 +76,8 @@
   <p>
     A little while ago, a project partner was looking for a message queue broker. They probably searched for something
     among the terms "message queue Kubernetes" on their favourite search engine and went with <a
-      href="https://kubemq.io/">KubeMQ</a>. This week, I deployed their work in our test environment and learned about
+      href="https://kubemq.io/">KubeMQ</a>. This week, I deployed some of their work in our test environment and learned
+    about
     KubeMQ for the first time.
   </p>
 
@@ -138,7 +139,9 @@
   </code>
   </p>
 
-  <p>Well no. The Apache-2.0 OpenSource version refuses to start if it detects a Kubernetes environment.</p>
+  <p><a
+      href="https://github.com/kubemq-io/kubemq-community/blob/7febb3a4f8d1127e9c72a982b0574ce6474b81ad/services/report/signature.go#L21-L23">Well
+      no</a>. The Apache-2.0 OpenSource version refuses to start if it detects a Kubernetes environment.</p>
 
   <p>
     Of course, <a href="https://github.com/kelvin-pl/kubemq-community">someone made a fork</a> and removed the telemetry
